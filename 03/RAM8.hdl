@@ -1,0 +1,51 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/3/a/RAM8.hdl
+/**
+ * Memory of eight 16-bit registers.
+ if (load)
+   look at register defined by address and set it to the input
+else 
+    value does NOT change.
+ * If load is asserted, the value of the register selected by
+ * address is set to in; Otherwise, the value does not change.
+ * The value of the selected register is emitted by out.
+ */
+CHIP RAM8 {
+    IN in[16], load, address[3];
+    OUT out[16];
+
+    PARTS:
+    Register(in=in, load=load1, out=rg1);
+    Register(in=in, load=load2, out=rg2);
+    Register(in=in, load=load3, out=rg3);
+    Register(in=in, load=load4, out=rg4);
+    Register(in=in, load=load5, out=rg5);
+    Register(in=in, load=load6, out=rg6);
+    Register(in=in, load=load7, out=rg7);
+    Register(in=in, load=load8, out=rg8);
+
+    DMux8Way(in=load , sel=address, a=load1, b=load2 , c=load3, 
+    d=load4, e=load5, f=load6 , g=load7 , h=load8);
+
+    
+    Mux8Way16(a=rg1, b=rg2, c=rg3, d=rg4, 
+    e=rg5, f=rg6 , g=rg7, h=rg8 , sel=address, out=out );
+}
+
+/**
+RAM8 Key Concepts:
+
+- The Demux-Mux Pattern: When building addressable memory, you typically need BOTH:
+- DMux on WRITE path: Routes the load/enable signal to ONE specific register based on address
+
+- Mux on READ path: Selects which register's output to emit based on address
+     - Why DMux was critical here:
+       - Each register needs its OWN load signal (not shared)
+       - DMux8Way takes the single load bit and routes it to 1 of 8 outputs based on address[3]
+       - Only the selected register gets load=1; the other 7 get load=0
+       - This ensures only ONE register updates at a time
+     - Pattern recognition: Addressable storage almost always needs demux for write-enable/load control and mux for read selection. It's about controlling WHERE data
+    goes (write) vs. WHERE data comes from (read).
+    */
