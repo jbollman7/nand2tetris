@@ -59,7 +59,7 @@ M=D // Change R0 contents to equal screen start address. R0 is a poitner
 
     // KBD does have a input
     @R1
-    M=0 // black
+    M=-1 // black
 
     @INNER_LOOP
     0;JMP
@@ -72,7 +72,7 @@ M=D // Change R0 contents to equal screen start address. R0 is a poitner
 // RAM kbd == 0
 (KBD_NO_INPUT)
     @R1
-    M=-1 // white
+    M=0 // white
     // Prevents fall through
     @INNER_LOOP
     0;JMP
